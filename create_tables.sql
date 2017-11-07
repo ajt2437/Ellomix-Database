@@ -1,7 +1,7 @@
 \c postgres
 drop database if exists ellomix;
 create database ellomix;
-\c imdb;
+\c ellomix;
 
 create table User(
 	user_id serial primary key not null unique,
