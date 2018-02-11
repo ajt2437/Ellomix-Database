@@ -1,8 +1,3 @@
-\c postgres;
-drop database if exists ellomix;
-create database ellomix;
-\c ellomix;
-
 create table Users(
 	user_id serial primary key not null unique,
 	name varchar(75) not null,

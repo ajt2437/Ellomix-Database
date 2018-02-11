@@ -25,19 +25,19 @@ SECRET_KEY = 'x70)*tj2(vteh*ikgswb-(1%ia7^sqz2&9k^=6r4dt&83&7r@j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Ellomix-dev.us-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['Ellomix-dev.us-west-2.elasticbeanstalk.com', 'aa4z0cba1fvawc.cugom1flcvya.us-west-2.rds.amazonaws.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'db.apps.DbConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'db',
 ]
 
 MIDDLEWARE = [
@@ -92,7 +92,7 @@ else:
             'NAME': 'ebdb',
             'USER': 'master',
             'PASSWORD': 'welcometotheparty',
-            'HOST': 'localhost',
+            'HOST': 'aa4z0cba1fvawc.cugom1flcvya.us-west-2.rds.amazonaws.com',
             'PORT': '5432',
         }
     }
