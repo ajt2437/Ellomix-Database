@@ -72,7 +72,7 @@ class Message(models.Model):
 
 class Chat(models.Model):
     chat_id = models.AutoField(primary_key=True)
-    from_recipent = models.AutoField()
+    from_recipent = models.ForeignKey('Users', models.DO_NOTHING)
     most_recent_message = models.TextField(blank=True, null=True)
     playlist = models.ForeignKey('Playlist', models.DO_NOTHING)
     message = models.ForeignKey('Message', models.DO_NOTHING)

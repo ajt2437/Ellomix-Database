@@ -48,7 +48,7 @@ create table Message(
 
 create table Chat(
 	chat_id serial primary key not null unique,
-	from_recipent serial,
+	from_recipent serial references Users(user_id),
 	most_recent_message text,
 	playlist_id serial references Playlist(playlist_id),
 	message_id serial references Message(message_id)
