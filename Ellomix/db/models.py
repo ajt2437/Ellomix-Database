@@ -13,6 +13,9 @@ class Users(models.Model):
         managed = False
         db_table = 'users'
 
+    def __str__(self):
+        return self.name 
+
 class Track(models.Model):
     track_id = models.AutoField(primary_key=True)
     artist = models.CharField(max_length=75, blank=True, null=True)

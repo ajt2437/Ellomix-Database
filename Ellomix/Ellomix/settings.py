@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['Ellomix-dev.us-west-2.elasticbeanstalk.com', 'aa4z0cba1fvawc.c
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'db.apps.DbConfig',
     'django.contrib.admin',
     'django.contrib.auth',
