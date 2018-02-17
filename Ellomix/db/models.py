@@ -28,6 +28,9 @@ class Track(models.Model):
         managed = False
         db_table = 'track'
 
+    def __str__(self):
+        return self.artist + ' - ' + self.title
+
 class Playlist(models.Model):
     playlist_id = models.AutoField(primary_key=True)
     track = models.ForeignKey('Track', models.DO_NOTHING)

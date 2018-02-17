@@ -1,7 +1,8 @@
 # Generic
-
 from rest_framework import generics
+
 from db.models import TimelinePost
+
 from .serializers import TimelinePostSerializer
 
 class TimelinePostRudView(generics.RetrieveUpdateDestroyAPIView):
