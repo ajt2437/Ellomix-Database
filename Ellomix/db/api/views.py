@@ -17,15 +17,15 @@ class TimelinePostAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 	def post(self, request, *args, **kwargs):
 		return self.create(request, *args, **kwargs)
 
-	def put(self, request, *args, **kwargs):
-		return self.update(request, *args, **kwargs)
-
-	def patch(self, request, *args, **kwargs):
-		return self.update(request, *args, **kwargs)
+	def get_serializer_context(self, *args, **kwargs):
+		return {"request": self.request}
 
 class TimelinePostRudView(generics.RetrieveUpdateDestroyAPIView):
 	lookup_field		= 'post_id'
 	serializer_class 	= TimelinePostSerializer
 
 	def get_queryset(self):
-		return TimelinePost.objects.all()		
+		return TimelinePost.objects.all()
+
+	def get_serializer_context(self, *args, **kwargs):
+		return {"request": self.request}

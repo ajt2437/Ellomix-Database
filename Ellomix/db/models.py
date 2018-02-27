@@ -1,4 +1,7 @@
 from django.db import models
+from django.urls import reverse
+
+from rest_framework.reverse import reverse as api_reverse
 
 # Create your models here.
 class Users(models.Model):
@@ -49,6 +52,9 @@ class TimelinePost(models.Model):
     class Meta:
         managed = False
         db_table = 'timelinepost'
+
+    def get_api_url(self, request=None):
+        return api_reverse("api-db:post-rud", kwargs={'post_id': self.post_id}, request=request)
 
 class Comment(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING)
