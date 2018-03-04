@@ -2,6 +2,7 @@
 from rest_framework import generics, mixins
 
 from db.models import TimelinePost
+from .permissions import IsOwnerOrReadOnly
 from .serializers import TimelinePostSerializer
 
 class TimelinePostAPIView(mixins.CreateModelMixin, generics.ListAPIView):
@@ -23,6 +24,7 @@ class TimelinePostAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 class TimelinePostRudView(generics.RetrieveUpdateDestroyAPIView):
 	lookup_field		= 'post_id'
 	serializer_class 	= TimelinePostSerializer
+	permission_classes  = [IsOwnerOrReadOnly]
 
 	def get_queryset(self):
 		return TimelinePost.objects.all()

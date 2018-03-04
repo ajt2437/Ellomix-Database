@@ -4,7 +4,6 @@ from db.models import TimelinePost
 
 class TimelinePostSerializer(serializers.ModelSerializer):
 	url			= serializers.SerializerMethodField(read_only=True)
-
 	class Meta:
 		model = TimelinePost
 		fields = [
