@@ -13,84 +13,97 @@ admin.initializeApp();
 // });
 
 // Listens for new groups added to /Messages/
-exports.sendNewGroupNotification = functions.database.ref('/Groups/{groupId}')
-    .onCreate((snapshot, context) => {
-        //The topic name can be optionally prefixed with "/topics/"
-        var topic = snapshot.key;
-
-        var db = admin.database();
-
-        //Subscribe all members to topic
-        //1. Get list of group members' uuid
-        var groupUsersSnapshot = snapshot.child("users");
-        var membersList = groupUsersSnapshot.val();
-
-        var registrationTokens = [];
-
-        var userRef = db.ref("/Users");
-
-        ref.once("value",
-            (snapshot) => {
-                for (memberUUID in membersList) {
-                    //2. Get each user's registration token (aka Instance ID) from users ref
-
-                    var registrationToken = snapshot.child(memberUUID).child("instance_ID").val();
-
-                    if (registrationID !== undefined) {
-                        registrationTokens.push(registrationToken);
-                    }
-                }
-            },
-            (error) => {
-                console.log('Error value obtain message:', error);
-                return false;
-            });
-
-        //3. Subscribe all user instance ID to the groud ID topic
-        admin.messaging().subscribeToTopic(registrationTokens, topic)
-            .then((response) => {
-                //Response is a message
-                console.log('Successfully subscribe users', response);
-                return true;
-            })
-            .catch((error) => {
-                console.log('Error subscribe users message:', error);
-                return false;
-            });
-
-
-
-        var groupUsersRef = db.ref("/Groups/" + topic + "/users");
-
-
-        //Print out group key
-        console.log('Group key', topic);
-
-        //Prepare message
-        var message = {
-            notification: {
-                title: 'You just got invited to a new chat',
-                body: 'Start chatting up'
-            },
-            topic: topic
-        };
-
-        //Send a message to devices subscribed to the provided topic
-        admin.messaging().send(message)
-            .then((response) => {
-                //Response is a message
-                console.log('Successfully sent message:', response);
-                return true;
-            })
-            .catch((error) => {
-                console.log('Error sending message:', error);
-                return false;
-            });
-    });
+// exports.sendNewGroupNotification = functions.database.ref('/Groups/{groupId}')
+//     .onCreate((snapshot, context) => {
+//         //The topic name can be optionally prefixed with "/topics/"
+//         var topic = snapshot.key;
+// 
+//         var db = admin.database();
+// 
+//         //Subscribe all members to topic
+//         //1. Get list of group members' uuid
+//         var groupUsersSnapshot = snapshot.child("users");
+//         var membersList = groupUsersSnapshot.val();
+// 
+//         var registrationTokens = [];
+// 
+//         var userRef = db.ref("/Users");
+// 
+//         ref.once("value",
+//             (snapshot) => {
+//                 for (memberUUID in membersList) {
+//                     //2. Get each user's registration token (aka Instance ID) from users ref
+// 
+//                     var registrationToken = snapshot.child(memberUUID).child("instance_ID").val();
+// 
+//                     if (registrationID !== undefined) {
+//                         registrationTokens.push(registrationToken);
+//                     }
+//                 }
+//             },
+//             (error) => {
+//                 console.log('Error value obtain message:', error);
+//                 return false;
+//             });
+// 
+//         //3. Subscribe all user instance ID to the groud ID topic
+//         admin.messaging().subscribeToTopic(registrationTokens, topic)
+//             .then((response) => {
+//                 //Response is a message
+//                 console.log('Successfully subscribe users', response);
+//                 return true;
+//             })
+//             .catch((error) => {
+//                 console.log('Error subscribe users message:', error);
+//                 return false;
+//             });
+// 
+// 
+// 
+//         var groupUsersRef = db.ref("/Groups/" + topic + "/users");
+// 
+// 
+//         //Print out group key
+//         console.log('Group key', topic);
+// 
+//         //Prepare message
+//         var message = {
+//             notification: {
+//                 title: 'You just got invited to a new chat',
+//                 body: 'Start chatting up'
+//             },
+//             topic: topic
+//         };
+// 
+//         //Send a message to devices subscribed to the provided topic
+//         admin.messaging().send(message)
+//             .then((response) => {
+//                 //Response is a message
+//                 console.log('Successfully sent message:', response);
+//                 return true;
+//             })
+//             .catch((error) => {
+//                 console.log('Error sending message:', error);
+//                 return false;
+//             });
+//     });
 
 exports.sendNewMessageNotification = functions.database.ref('/Messages/{groupId}/{messageId}')
     .onCreate((snapshot, context) => {
+    	console.log('sendNewMessageNotification');
+		console.log('Snapshot key: ', snapshot.key);
+		console.log('Message Id: ', messageId);
+		console.log('Group Id: ', groupId);
 
+	// 	get values from message
+	if (snapshot.hasChild('content')) {
+		var content = snapshot.child('content').val();
+		console.log('Content:', content);
+	}
+	if (snapshot.hasChild('uid')) {
+		var uid = snapshot.child('uid').val();
+		console.log('Uid:', uid);
+	}
     });
 
 
@@ -109,3 +122,48 @@ exports.sendNewMessageNotification = functions.database.ref('/Messages/{groupId}
 // Setting an "uppercase" sibling in the Realtime Database returns a Promise.
 //	    return snapshot.ref.parent.child('uppercase').set(uppercase);
 //	});
+
+/* 
+
+Triggers when new message added to Messages/{groupId}
+
+Get the following values from last message
+{content}, {uid}
+
+Send push notification to topic {groupId}
+
+Notification message
+Title: Users/{uid}/name
+Message: {content}
+
+*/
+
+exports.sendGroupNotification = functions.database.ref('Messages/{groupId}/').onCreate(
+(snapshot, context) => {
+	console.log('sendGroupNotification');
+	console.log('Snapshot key: ', snapshot.key);
+	console.log('Group Id:', groupId);
+
+	// 	get values from message
+	if (snapshot.hasChild('content')) {
+		var content = snapshot.child('content').val();
+		console.log('Content:', content);
+	}
+	if (snapshot.hasChild('uid')) {
+		var uid = snapshot.child('uid').val();
+		console.log('Uid:', uid);
+	}
+	
+// 	const getUserInfoPromise = admin.database()
+// 	.ref('Users/' + uid + );
+	
+	
+	// const payload = {
+//         notification: {
+//             title: 'You just got invited to a new chat',
+//             body: content
+//         },
+//         topic: topic
+//     };
+	
+});
